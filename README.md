@@ -1,3 +1,5 @@
+*** To run this project, it's required .env file for each service ***
+
 This project is a microservices-based ToDo application built using Spring Boot. It consists of two independent services:
 
 1-  ToDo Service:
