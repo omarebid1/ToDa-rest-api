@@ -15,3 +15,6 @@ spring:
 
 jwt:
   secret: ${MY_SECRET_KEY}  # JWT secret key
+
+server:
+  port: ${RUNNING_PORT}

@@ -12,3 +12,6 @@ spring:
       ddl-auto: create
     open-in-view: false  # To improve performance
     #show-sql: true
+
+server:
+  port: ${RUNNING_PORT}
