@@ -2,10 +2,12 @@ package com.todoservice.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "items")
 @Data
+@NoArgsConstructor
 public class Item {
 
     @Id
@@ -21,4 +23,9 @@ public class Item {
     @JoinColumn(name = "item_details_id")
     private ItemDetails itemDetails;
 
+    public Item(String title, Long userId, ItemDetails itemDetails) {
+        this.title = title;
+        this.userId = userId;
+        this.itemDetails = itemDetails;
+    }
 }
