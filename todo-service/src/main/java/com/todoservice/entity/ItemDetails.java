@@ -1,5 +1,6 @@
 package com.todoservice.entity;
 
+import com.todoservice.enums.Priority;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,10 +20,10 @@ public class ItemDetails {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    private String priority;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "priority")
+    private Priority priority;
 
-    private String status;
-
-    // Getters and Setters
-    // ...
+    @Column(name = "is_completed")
+    private Boolean status;
 }

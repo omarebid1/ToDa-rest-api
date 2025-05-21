@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "items_table")
+@Table(name = "items")
 @Data
 public class Item {
 
@@ -20,8 +20,5 @@ public class Item {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "item_details_id")
     private ItemDetails itemDetails;
-
-    @Column(name = "is_completed")
-    private Boolean isCompleted;
 
 }
