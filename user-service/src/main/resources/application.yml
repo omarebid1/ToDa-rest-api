@@ -13,8 +13,5 @@ spring:
     open-in-view: false  # To improve performance
     #show-sql: true
 
-jwt:
-  secret: ${MY_SECRET_KEY}  # JWT secret key
-
 server:
   port: ${RUNNING_PORT}
