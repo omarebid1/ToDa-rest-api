@@ -3,6 +3,7 @@ package com.todoservice.controller;
 import com.todoservice.dto.request.ItemRequest;
 import com.todoservice.dto.response.ItemResponse;
 import com.todoservice.entity.Item;
+import com.todoservice.exception.ItemNotFoundException;
 import com.todoservice.service.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/items")
@@ -44,28 +44,20 @@ public class ItemController {
     @Operation(summary = "Update an item by ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Item updated successfully"),
-            @ApiResponse(responseCode = "404", description = "Item not found")
-    })
+            @ApiResponse(responseCode = "404", description = "Item not found")})
     @PutMapping("/update-item")
     public ResponseEntity<ItemResponse> updateItem(
             @Parameter(description = "ID of the item to be updated") @RequestParam Long id,
             @RequestBody ItemRequest itemRequest) {
 
-        Optional<Item> item = itemService.getItemById(id);
-        if (item.isPresent()) {
-            itemService.updateItem(id, itemRequest);
+        itemService.updateItemById(id, itemRequest)
+                .orElseThrow(() -> new ItemNotFoundException("Try with another one"));
 
-            ItemResponse itemResponse = new ItemResponse(
-                    "Item updated successfully!",
-                    LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter));
+        ItemResponse itemResponse = new ItemResponse(
+                "Item updated successfully!",
+                LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter));
 
-            return new ResponseEntity<>(itemResponse, HttpStatus.OK);
-        } else {
-            ItemResponse itemResponse = new ItemResponse(
-                    "Item not found!",
-                    LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter));
-            return new ResponseEntity<>(itemResponse, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(itemResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "Get an item by title")
@@ -74,21 +66,12 @@ public class ItemController {
             @ApiResponse(responseCode = "404", description = "Item not found")
     })
     @GetMapping("/get-item")
-    public ResponseEntity<ItemResponse> getItemByTitle(
+    public ResponseEntity<Item> getItemByTitle(
             @Parameter(description = "Title of the item to search for") @RequestParam String title) {
+        Item foundItem = itemService.getItemByTitle(title)
+                .orElseThrow(() -> new ItemNotFoundException("Item not Found, Try searching for another one"));
 
-        Optional<Item> item = itemService.getItemByTitle(title);
-        if (item.isPresent()) {
-            ItemResponse itemResponse = new ItemResponse(
-                    "Item found!",
-                    LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter));
-            return new ResponseEntity<>(itemResponse, HttpStatus.OK);
-        } else {
-            ItemResponse itemResponse = new ItemResponse(
-                    "Item not found!",
-                    LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter));
-            return new ResponseEntity<>(itemResponse, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(foundItem, HttpStatus.OK);
     }
 
     @Operation(summary = "Delete an item by ID")
@@ -100,19 +83,12 @@ public class ItemController {
     public ResponseEntity<ItemResponse> deleteItem(
             @Parameter(description = "ID of the item to be deleted") @RequestParam Long id) {
 
-        Optional<Item> item = itemService.getItemById(id);
-        if (item.isPresent()) {
-            itemService.deleteItem(id);
+        itemService.deleteItemById(id)
+                .orElseThrow(() -> new ItemNotFoundException("try with another one"));
 
-            ItemResponse itemResponse = new ItemResponse(
-                    "Item deleted successfully!",
-                    LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter));
-            return new ResponseEntity<>(itemResponse, HttpStatus.OK);
-        } else {
-            ItemResponse itemResponse = new ItemResponse(
-                    "Item not found!",
-                    LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter));
-            return new ResponseEntity<>(itemResponse, HttpStatus.NOT_FOUND);
-        }
+        ItemResponse itemResponse = new ItemResponse(
+                "Item deleted successfully!",
+                LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter));
+        return new ResponseEntity<>(itemResponse, HttpStatus.OK);
     }
 }

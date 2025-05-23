@@ -39,17 +39,13 @@ public class ItemService {
     }
 
     // get item by id to use it for deleting item
-    public Optional<Item> getItemById(long id) {
+    public Optional<Item> deleteItemById(long id) {
+        itemRepository.deleteById(id);
         return itemRepository.findById(id);
     }
 
-    // delete item by Id
-    public void deleteItem(Long id) {
-        itemRepository.deleteById(id);
-    }
-
     // update item by id
-    public void updateItem(Long id, ItemRequest item) {
+    public Optional<Item> updateItemById(Long id, ItemRequest item) {
         Item existingItem = itemRepository.findById(id).get();
 
         // Update the existing item with new values
@@ -65,5 +61,6 @@ public class ItemService {
                 LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter)
         );
         itemRepository.save(existingItem);
+        return itemRepository.findById(id);
     }
 }

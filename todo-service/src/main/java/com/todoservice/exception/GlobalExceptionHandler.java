@@ -3,15 +3,13 @@ package com.todoservice.exception;
 import com.todoservice.dto.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
@@ -29,10 +27,12 @@ public class GlobalExceptionHandler {
 
     // Handle all other exceptions
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllOtherExceptions(Exception ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", "An unexpected error occurred: " + ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorResponse> handleAllOtherExceptions(Exception ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Unexpected error occurred",
+                ex.getMessage(),
+                LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter));
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
