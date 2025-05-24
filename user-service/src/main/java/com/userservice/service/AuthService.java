@@ -4,6 +4,7 @@ import com.userservice.dto.request.LoginRequest;
 import com.userservice.dto.request.SignupRequest;
 import com.userservice.dto.response.AuthResponse;
 import com.userservice.entity.User;
+import com.userservice.enums.Role;
 import com.userservice.exception.EmailAlreadyFoundEx;
 import com.userservice.exception.InvalidPasswordEx;
 import com.userservice.exception.UserNotFoundEx;
@@ -72,7 +73,7 @@ public class AuthService {
                 registerRequest.getUsername(),
                 registerRequest.getEmail(),
                 hashedPassword,
-                registerRequest.getRole()
+                Role.USER // Default role
         );
         userRepository.save(user);
 

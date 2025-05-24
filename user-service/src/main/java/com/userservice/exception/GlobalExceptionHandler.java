@@ -27,13 +27,13 @@ public class GlobalExceptionHandler {
 
     // Handle EmailAlreadyFoundEx
     @ExceptionHandler(EmailAlreadyFoundEx.class)
-    public ResponseEntity<ErrorResponse> handleEmailAlreadyRegisterEx(EmailAlreadyFoundEx ex) {
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyFoundEx(EmailAlreadyFoundEx ex) {
         ErrorResponse errorResponse = new ErrorResponse(
-                "Email already registered",
+                "Email already exists",
                 ex.getMessage(),
                 LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter));
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     // Handle InvalidPasswordEx

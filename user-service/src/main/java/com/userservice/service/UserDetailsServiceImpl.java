@@ -1,5 +1,6 @@
 package com.userservice.service;
 
+import com.userservice.entity.User;
 import com.userservice.exception.UserNotFoundEx;
 import com.userservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UserNotFoundEx {
-        return userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundEx("User not found with email: " + email);
+        }
+        return user;
     }
-
 }
