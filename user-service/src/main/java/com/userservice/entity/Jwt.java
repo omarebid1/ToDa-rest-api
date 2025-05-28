@@ -1,5 +1,6 @@
 package com.userservice.entity;
 
+import com.userservice.enums.TokenType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -27,7 +28,11 @@ public class Jwt {
     private LocalDateTime expirationDate;
 
     @Column(name = "token_type")
-    private String tokenType;
+    @Enumerated(EnumType.STRING)
+    public TokenType tokenType = TokenType.BEARER;
+
+    @Column(name = "is_enabled")
+    private boolean isEnabled;
 
 }
 
