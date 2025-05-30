@@ -3,11 +3,14 @@ package com.userservice.service;
 import com.userservice.dto.request.LoginRequest;
 import com.userservice.dto.request.SignupRequest;
 import com.userservice.dto.response.AuthResponse;
+import com.userservice.dto.response.LoginResponse;
+import com.userservice.entity.Jwt;
 import com.userservice.entity.User;
 import com.userservice.enums.Role;
 import com.userservice.exception.EmailAlreadyFoundEx;
 import com.userservice.exception.InvalidPasswordEx;
 import com.userservice.exception.UserNotFoundEx;
+import com.userservice.repository.JwtRepository;
 import com.userservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AuthService {
@@ -32,28 +37,40 @@ public class AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    JwtRepository jwtRepository;
+
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     // LOGIN METHOD
-    public AuthResponse login(LoginRequest loginRequest) {
+    public LoginResponse login(LoginRequest req) {
         try {
             // To check user and password
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail(),
-                            loginRequest.getPassword()
+                            req.getEmail(),
+                            req.getPassword()
                     )
             );
 
+            User user = userRepository.findUserByEmail(req.getEmail());
+            Map<String, Object> extraClaims = new HashMap<>();
+            String jwtToken = jwtService.generateToken(user, extraClaims);
+            saveUserToken(user, jwtToken);
+
             // Return a basic response without token
-            return new AuthResponse(
+            return new LoginResponse(
                     "Login successful",
-                    LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter)
+                    LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter),
+                    jwtToken
             );
         } catch (BadCredentialsException ex) {
-            throw new InvalidPasswordEx("Invalid password for user: " + loginRequest.getEmail());
+            throw new InvalidPasswordEx("Invalid password for user: " + req.getEmail());
         } catch (UsernameNotFoundException | UserNotFoundEx ex) {
-            throw new UserNotFoundEx("User not found with email: " + loginRequest.getEmail());
+            throw new UserNotFoundEx("User not found with email: " + req.getEmail());
         }
     }
 
@@ -82,6 +99,19 @@ public class AuthService {
                 "Registration successful",
                 LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter)
         );
+    }
+
+    private void saveUserToken(User user, String jwtToken) {
+        // Create a new Jwt token and save it to the repository
+        Jwt jwt = new Jwt();
+        jwt.setUser(user);
+        jwt.setToken(jwtToken);
+        jwt.setEnabled(true);
+        jwt.setCreatedAt(LocalDateTime.now());
+        jwt.setExpirationDate(LocalDateTime.now().plusMinutes(15)); // Set expiration to 15 minutes from now
+
+        jwtRepository.save(jwt);
+
     }
 
 }
