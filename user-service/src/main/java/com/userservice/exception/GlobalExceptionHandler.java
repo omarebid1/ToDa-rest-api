@@ -15,6 +15,17 @@ public class GlobalExceptionHandler {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     // Handle UserNotFoundEx
+    @ExceptionHandler(WrongOtpEx.class)
+    public ResponseEntity<ErrorResponse> handleInvalidOtp(WrongOtpEx ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Wrong OTP",
+                ex.getMessage(),
+                LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter));
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    // Handle UserNotFoundEx
     @ExceptionHandler(UserNotFoundEx.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundEx(UserNotFoundEx ex) {
         ErrorResponse errorResponse = new ErrorResponse(
