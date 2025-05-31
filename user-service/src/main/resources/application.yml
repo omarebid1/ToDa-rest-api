@@ -12,7 +12,21 @@ spring:
       ddl-auto: create
     open-in-view: false  # To improve performance
     #show-sql: true
+  mail:
+    host: smtp-relay.brevo.com  # SMTP mail server
+    port: 587  # SMTP port
+    username: ${SMTP_USERNAME}  # SMTP username
+    password: ${SMTP_PASSWORD}  # SMTP password
+    properties:
+      mail.smtp.auth: true  # Enable SMTP authentication
+      mail.smtp.starttls.enable: true  # Enable STARTTLS security
 
+brevo:
+  api:
+    key: ${SMTP_API_KEY}  # Brevo API key
+  sender:
+    email: ${SMTP_SENDER_MAIL}  # Sender email for Brevo
+    name: TODA Team  # Sender name
 server:
   port: ${RUNNING_PORT}
 
