@@ -20,6 +20,9 @@ public class Otp {
     @Column(name = "expiration_time")
     private LocalDateTime expirationTime;
 
+    @Column(name = "is_used")
+    private boolean used;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
