@@ -16,7 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
         )
 )
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.todoservice"})
 public class TodoServiceApplication {
 
     public static void main(String[] args) {

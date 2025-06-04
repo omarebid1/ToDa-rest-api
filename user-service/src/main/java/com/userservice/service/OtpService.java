@@ -34,9 +34,7 @@ public class OtpService {
     @Value("${otp.expiration.minutes:5}")
     private int otpExpirationMinutes;
 
-    /**
-     * Generate and send a 6-digit OTP to the user's email
-     */
+    //  Generate and send a 6-digit OTP to the user's email
     public AuthResponse generateAndSendOtp(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundEx("Invalid request."));
@@ -65,9 +63,7 @@ public class OtpService {
         return new AuthResponse("OTP sent to " + email + " successfully!", LocalDateTime.now());
     }
 
-    /**
-     * Verify OTP and reset password in a single operation
-     */
+    //  Verify OTP and reset password in a single operation
     @Transactional
     public AuthResponse verifyOtpAndResetPassword(String email, String inputOtp, String newPassword) {
         if (!isOtpValid(email, inputOtp)) {
@@ -85,12 +81,10 @@ public class OtpService {
         return new AuthResponse("Password reset successfully!", LocalDateTime.now());
     }
 
-    /**
-     * Validates the OTP: checks if it's correct, unused, and unexpired
-     */
+    //  Validates the OTP: checks if it's correct, unused, and unexpired
     public boolean isOtpValid(String email, String inputOtp) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundEx("Invalid request."));
+                .orElseThrow(() -> new UserNotFoundEx("user not found with email: " + email));
 
         Optional<Otp> latestOtp = otpRepository.findTopByUserOrderByExpirationTimeDesc(user);
 
