@@ -3,11 +3,13 @@ package com.userservice.exception;
 import com.userservice.dto.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -23,6 +25,16 @@ public class GlobalExceptionHandler {
                 LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter));
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+        ErrorResponse error = new ErrorResponse(
+                "VALIDATION_ERROR",
+                Objects.requireNonNull(ex.getBindingResult().getFieldError()).getDefaultMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.badRequest().body(error);
     }
 
     // Handle UserNotFoundEx
