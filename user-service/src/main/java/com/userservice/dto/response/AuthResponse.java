@@ -25,4 +25,8 @@ public class AuthResponse {
     )
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime timestamp;
+
+    public AuthResponse(String message) {
+        this.message = message;
+    }
 }

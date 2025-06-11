@@ -28,4 +28,8 @@ public class LoginResponse {
 
     @Schema(description = "JWT authentication token", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6...")
     private String token;
+
+    public LoginResponse(String token) {
+        this.token = token;
+    }
 }

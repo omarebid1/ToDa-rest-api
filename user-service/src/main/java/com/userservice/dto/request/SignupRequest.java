@@ -37,4 +37,10 @@ public class SignupRequest {
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Role must not be null")
     private Role role;
+
+    public SignupRequest(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 }
