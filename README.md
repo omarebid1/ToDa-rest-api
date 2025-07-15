@@ -1,4 +1,4 @@
-# 🧾 ToDo REST API – Microservices Architecture
+# 🧾 ToDa REST API – Microservices Architecture
 
 Questa è un'applicazione ToDo basata su microservizi, sviluppata in **Java** con **Spring Boot**, che implementa gestione utenti, autenticazione JWT e operazioni CRUD.
 
@@ -45,11 +45,3 @@ Ogni servizio ha un database dedicato e comunica con l'altro tramite richieste H
 - MySQL
 - REST API
 - Docker (facoltativo, in sviluppo)
-
----
-
-## ▶️ Come eseguire
-
-1. Clona il repository:
-```bash
-git clone https://github.com/omarebid1/ToDa-rest-api.git
